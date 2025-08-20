@@ -1,0 +1,60 @@
+---
+# Ansible playbook for configuring the AWS EC2 instance
+# Installs Nginx and deploys a simple branded web page
+
+- hosts: all
+  become: yes        # Gain root privileges to install packages
+  vars:
+    index_content: |
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Federico Rormoser DevOps Demo</title>
+        <style>
+          body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+          h1 { color: #2F4F4F; }
+          p { color: #555; font-size: 18px; }
+          .footer { margin-top: 40px; font-size: 14px; color: #888; }
+        </style>
+      </head>
+      <body>
+        <h1>Hello from AWS + Terraform + Ansible 🚀</h1>
+        <p>Created by Federico Rormoser – DevOps Portfolio Project</p>
+        <div class="footer">© 2025 Federico Rormoser</div>
+      </body>
+      </html>
+
+  tasks:
+    - name: Update all packages to latest
+      yum:
+        name: "*"
+        state: latest
+      tags: update
+
+    - name: Install Nginx web server
+      yum:
+        name: nginx
+        state: present
+      tags: install
+
+    - name: Start and enable Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      tags: service
+
+    - name: Deploy custom index.html page
+      copy:
+        content: "{{ index_content }}"
+        dest: /usr/share/nginx/html/index.html
+      tags: deploy
+
+    - name: Ensure firewall allows HTTP (port 80) if firewalld is used
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+      ignore_errors: yes   # Skip if firewalld not installed
+      tags: firewall
+
