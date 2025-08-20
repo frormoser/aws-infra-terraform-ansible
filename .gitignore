@@ -1,0 +1,12 @@
+# SSH keys
+*.pem
+
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Python / Ansible caches
+*.pyc
+__pycache__/
+
