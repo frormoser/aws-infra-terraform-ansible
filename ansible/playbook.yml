@@ -11,15 +11,87 @@
         <meta charset="UTF-8">
         <title>Federico Rormoser DevOps Demo</title>
         <style>
-          body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-          h1 { color: #2F4F4F; }
-          p { color: #555; font-size: 18px; }
-          .footer { margin-top: 40px; font-size: 14px; color: #888; }
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #2F4F4F;
+            transition: background-color 0.3s, color 0.3s;
+          }
+          h1 {
+            margin-top: 60px;
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #1a3d3d;
+          }
+          p {
+            font-size: 1.3em;
+            margin-top: 20px;
+            color: #444;
+          }
+          .footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #888;
+          }
+          .btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            background: #0077b5; /* LinkedIn blue */
+            transition: background 0.3s;
+          }
+          .btn:hover {
+            background: #005582;
+          }
+          .toggle-dark {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #333;
+            color: #fff;
+            transition: background 0.3s;
+          }
+          .toggle-dark:hover {
+            background: #555;
+          }
+          body.dark-mode {
+            background-color: #1e1e1e;
+            color: #ddd;
+          }
+          body.dark-mode h1 {
+            color: #7fd1d1;
+          }
+          body.dark-mode p {
+            color: #ccc;
+          }
+          body.dark-mode .footer {
+            color: #aaa;
+          }
         </style>
       </head>
       <body>
         <h1>Hello from AWS + Terraform + Ansible 🚀</h1>
         <p>Created by Federico Rormoser – DevOps Portfolio Project</p>
+
+        <a class="btn" href="https://www.linkedin.com/in/federico-rormoser/" target="_blank">
+          Connect on LinkedIn
+        </a>
+
+        <br>
+        <button class="toggle-dark" onclick="document.body.classList.toggle('dark-mode')">
+          🌙 Toggle Dark Mode
+        </button>
+
         <div class="footer">© 2025 Federico Rormoser</div>
       </body>
       </html>
@@ -50,11 +122,15 @@
         dest: /usr/share/nginx/html/index.html
       tags: deploy
 
-    - name: Ensure firewall allows HTTP (port 80) if firewalld is used
-      firewalld:
-        service: http
-        permanent: yes
-        state: enabled
-      ignore_errors: yes   # Skip if firewalld not installed
-      tags: firewall
-
+# This section is not required for AWS or most cloud deployments,
+# because Security Groups already handle port 80 access.
+# However, it can be useful if running Ansible in local or on-prem setups
+# where firewalld is enabled.
+#
+# - name: Ensure firewall allows HTTP (port 80) if firewalld is used
+#   firewalld:
+#     service: http
+#     permanent: yes
+#     state: enabled
+#   ignore_errors: yes   # Skip if firewalld not installed
+#   tags: firewall
