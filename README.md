@@ -10,7 +10,6 @@ This project showcases a **real-world DevOps workflow** combining:
 - **AWS EC2 + Nginx** -- Running a custom branded web page
 
 👉 **Visible Result:**  A fully provisioned EC2 instance with Nginx serving a custom branded web page.  
-serving a custom branded web page.
 
 🌍 **Demo Online:**  
 The original AWS EC2 public IP used in this project (`13.220.108.1`) is no longer active.  
@@ -56,19 +55,19 @@ aws-infra-terraform-ansible/
 
 ├─ terraform/
 
-│ └─ main.tf \# Terraform config for EC2
+│ └─ main.tf                                   # Terraform config for EC2
 
 ├─ ansible/
 
-│ ├─ playbook.yml \# Ansible playbook (Nginx + custom HTML)
+│ ├─ playbook.yml                              # Ansible playbook (Nginx + custom HTML)
 
-│ └─ inventory.ini \# Inventory with EC2 public IP
+│ └─ inventory.ini                             # Inventory with EC2 public IP
 
 ├─ images/ 
 
-│ ├─ architecture.png \# Architecture diagram
+│ ├─ architecture.png                          # Architecture diagram
 
-│ ├─ demo.png \# Screenshot of deployed page
+│ ├─ demo.png                                  # Screenshot of deployed page
 
 │ ├─ aws_configure.png                         # AWS CLI configure command  
 │ ├─ aws--version.png                          # AWS CLI version check  
@@ -103,14 +102,13 @@ Install AWS CLI:
 [[Installing or updating to the latest version of the AWS
 CLI]](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 ```
-curl \"https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip\" -o
-\"awscliv2.zip\"
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 
 unzip awscliv2.zip
 
 sudo ./aws/install
 
-aws \--version
+aws --version
 
 aws sts get-caller-identity
 ```
@@ -130,22 +128,22 @@ aws sts get-caller-identity
 
 Terraform configuration (```terraform/main.tf```):
 ```
-provider \"aws\" {
-region = \"us-east-1\"
+provider "aws" {
+region = "us-east-1"
 }
 
-resource \"aws_instance\" \"web\" {
-ami = \"ami-00ca32bbc84273381\" \# Amazon Linux 2023
-instance_type = \"t2.micro\"
+resource "aws_instance" "web" {
+ami = "ami-00ca32bbc84273381" # Amazon Linux 2023
+instance_type = "t2.micro"
 
-key_name = \"terraform-ansible-key\"
+key_name = "terraform-ansible-key"
 
 tags = {
-Name = \"WebServer\"
+Name = "WebServer"
 }
 
 }
-output \"public_ip\" {
+output "public_ip" {
 value = aws_instance.web.public_ip
 }
 ```
@@ -166,13 +164,13 @@ terraform apply
 ### **4️⃣ Ansible -- Configure EC2**
 Playbook excerpt (```ansible/playbook.yml```):
 ```
-\- hosts: all
+- hosts: all
 
 become: yes
 
 tasks:
 
-\- name: Install Nginx web server
+- name: Install Nginx web server
 
 yum:
 
@@ -180,11 +178,11 @@ name: nginx
 
 state: present
 
-\- name: Deploy custom index.html page
+- name: Deploy custom index.html page
 
 copy:
 
-content: \"{{ index_content }}\"
+content: "{{ index_content }}"
 
 dest: /usr/share/nginx/html/index.html
 tags: deploy
@@ -193,10 +191,9 @@ see full playbook in ansible/playbook.yml
 
 Inventory (```ansible/inventory.ini```):
 ```
-\[web\]
-
+[web]
 X.X.X.X ansible_user=ec2-user
-ansible_ssh_private_key_file=\~/.ssh/terraform-ansible-key.pem
+ansible_ssh_private_key_file=~/.ssh/terraform-ansible-key.pem
 ```
 Run:
 ```
@@ -209,29 +206,29 @@ ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
 
 Open:
 ```
-http://\<EC2_PUBLIC_IP\>
+http://<EC2_PUBLIC_IP>
 ```
-🔗 [https://13.220.108.1](https://aws-infra-terraform-ansible.netlify.app)  
+🔗 [Live Demo on Netlify](https://aws-infra-terraform-ansible.netlify.app/)  
 
 **Nginx Web Server with Custom Page**
 ![Demo Web Page](images/demo.png)
 
 ## **📈 Future Improvements**
 
-- Dynamic Ansible inventory with Terraform outputs
+To evolve this project towards a production-grade, enterprise-ready environment, the following enhancements are planned:
 
-- SSL via Let's Encrypt
-
-- Monitoring with CloudWatch / Prometheus
-
-- CI/CD pipeline with GitHub Actions
-
-- Load balancing + auto-scaling groups
-
+- **Dynamic Ansible Inventory** → Automatically generate Ansible inventories from Terraform outputs for fully reproducible deployments.  
+- **Security & Compliance** → Enforce HTTPS with Let's Encrypt, implement least-privilege IAM roles, enable audit logging, and use AWS SSM Parameter Store for secrets management.  
+- **Scalability** → Replace the single EC2 instance with an Auto Scaling Group behind an Elastic Load Balancer (ALB) to handle variable traffic seamlessly.  
+- **High Availability** → Deploy infrastructure across multiple Availability Zones, add health checks, and configure failover strategies for resilience.  
+- **Monitoring & Observability** → Integrate AWS CloudWatch dashboards, Prometheus exporters, and Grafana visualizations to provide actionable insights and proactive alerts.  
+- **CI/CD Automation** → Add a GitHub Actions pipeline to validate Terraform plans, lint Ansible playbooks, and automate infrastructure deployments end-to-end.  
+- **Cost Optimization** → Use spot instances where possible, configure lifecycle policies for S3, and adopt autoscaling strategies to optimize cloud spend.  
+- **Architecture Expansion** → Extend the stack with Amazon RDS (managed database), S3 for static asset storage, and optionally Kubernetes (EKS) for containerized workloads.  
 
 ## **📊 Architecture Diagram**
 
-![Architecture Diagram](images/arquitecture.png)
+![Architecture Diagram](images/architecture.png)
 
 ## **✨ Author**
 
@@ -239,7 +236,7 @@ http://\<EC2_PUBLIC_IP\>
 Automation**
 
 🔗
-[[LinkedIn]](https://www.linkedin.com/in/tu-perfil?utm_source=chatgpt.com)
+[[LinkedIn]](https://www.linkedin.com/in/federico-rormoser/)
 
 💡 DevOps Engineer passionate about cloud infrastructure, automation,
 and delivering reliable, scalable systems.
